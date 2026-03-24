@@ -3,7 +3,8 @@ version: '3.8'
 services:
   web:
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
+    # Run the standard start script (or optionally bypass the statics setup script locally)
+    command: ./start.sh
     volumes:
       - .:/app
     ports:

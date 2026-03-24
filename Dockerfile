@@ -30,5 +30,5 @@ COPY . /app/
 # Expose port 8000
 EXPOSE 8000
 
-# The default command runs the server
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# Run the production start script
+CMD ["./start.sh"]
