@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block title %}Game: {{ game_slug }}{% endblock %}
+
+{% block content %}
+<main class="flex-grow container mx-auto p-4">
+    <h1 class="text-4xl font-bold mb-4">Game Detail: {{ game_slug }}</h1>
+    <p>Detailed information and aggregated user reviews will go here.</p>
+</main>
+{% endblock %}

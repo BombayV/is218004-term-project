@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block title %}Gallery{% endblock %}
+
+{% block content %}
+<main class="flex-grow container mx-auto p-4 py-8">
+    <div class="flex flex-col md:flex-row gap-8">
+        
+        <!-- Sidebar filters -->
+        <aside class="w-full md:w-64 space-y-6">
+            <div>
+                <h3 class="font-bold text-lg mb-4">Filters</h3>
+                
+                <form method="GET" action="{% url 'gallery' %}" class="space-y-4">
+                    {% if query %}
+                        <input type="hidden" name="q" value="{{ query }}">
+                    {% endif %}
+                    
+                    <div class="space-y-2">
+                        <label class="text-sm font-medium leading-none">Genre</label>
+                        <select name="genre" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" onchange="this.form.submit()">
+                            <option value="">All Genres</option>
+                            {% for genre in genres %}
+                                <option value="{{ genre.slug }}" {% if current_genre == genre.slug %}selected{% endif %}>
+                                    {{ genre.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <c-button type="submit" variant="outline" class="w-full">Apply Filters</c-button>
+                </form>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="flex-1 space-y-6">
+            <div class="flex flex-col gap-2">
+                <h1 class="text-3xl font-bold tracking-tight">Game Gallery</h1>
+                <p class="text-muted-foreground">
+                    {% if query %}
+                        Showing search results for "{{ query }}"
+                    {% else %}
+                        Browse our complete collection of games
+                    {% endif %}
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for game in games %}
+                    <a href="{% url 'game_detail' game.slug %}" class="transition-transform hover:-translate-y-1">
+                        <c-card>
+                            <c-card.header>
+                                <c-card.title>{{ game.title }}</c-card.title>
+                                <c-card.description>{{ game.developer }}</c-card.description>
+                            </c-card.header>
+                            <c-card.content>
+                                {% if game.cover_image %}
+                                    <img src="{{ game.cover_image.url }}" alt="{{ game.title }} cover" class="w-full h-48 object-cover rounded-md mb-4" />
+                                {% else %}
+                                    <div class="w-full h-48 bg-muted rounded-md mb-4 flex items-center justify-center text-muted-foreground">No Image</div>
+                                {% endif %}
+                                <div class="flex justify-between items-center">
+                                    <c-badge>{{ game.genre.name }}</c-badge>
+                                    <span class="text-sm font-medium">★ 0.0</span>
+                                </div>
+                            </c-card.content>
+                        </c-card>
+                    </a>
+                {% empty %}
+                    <div class="col-span-full py-12 text-center">
+                        <h3 class="text-lg font-medium">No results found</h3>
+                        <p class="text-muted-foreground">Try adjusting your filters or search query.</p>
+                        <a href="{% url 'gallery' %}" class="mt-4 inline-block">
+                            <c-button variant="outline">Clear Filters</c-button>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+            
+            <!-- Pagination Placeholder -->
+            <div class="mt-8 flex justify-center">
+                <c-button variant="outline">Load More</c-button>
+            </div>
+            
+        </div>
+    </div>
+</main>
+{% endblock %}

@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=1
+    depends_on:
+      - tailwind
+
+  tailwind:
+    build: .
+    command: npx @tailwindcss/cli -i input.css -o gamereviews/static/css/output.css --watch
+    volumes:
+      - .:/app

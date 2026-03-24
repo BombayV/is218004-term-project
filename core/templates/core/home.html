@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<main class="flex-grow">
+    <!-- Hero Section -->
+    <section class="space-y-6 pb-8 pt-6 md:pb-12 md:pt-10 lg:py-32 items-center flex flex-col justify-center text-center">
+        <div class="container flex max-w-[64rem] flex-col items-center gap-4 text-center">
+            <c-badge variant="outline" class="mb-4">New Updates Available</c-badge>
+            <h1 class="font-bold text-3xl sm:text-5xl md:text-6xl lg:text-7xl">
+                Discover your next favorite game.
+            </h1>
+            <p class="max-w-[42rem] leading-normal text-muted-foreground sm:text-xl sm:leading-8">
+                Read community reviews, share your thoughts, and track the games you've played with GameReviews platform.
+            </p>
+            <div class="space-x-4 mt-4">
+                <a href="{% url 'gallery' %}">
+                    <c-button size="lg">Browse Games</c-button>
+                </a>
+                <a href="{% url 'account_signup' %}">
+                    <c-button size="lg" variant="outline">Create Account</c-button>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recent Games Grid -->
+    <section class="container mx-auto px-4 py-8 space-y-6 md:py-12 lg:py-24">
+        <div class="mx-auto flex max-w-[58rem] flex-col items-center space-y-4 text-center">
+            <h2 class="font-bold text-3xl leading-[1.1] sm:text-3xl md:text-6xl">Recently Added</h2>
+            <p class="max-w-[85%] leading-normal text-muted-foreground sm:text-lg sm:leading-7">
+                Check out the latest games added to our database.
+            </p>
+        </div>
+
+        <div class="mx-auto grid justify-center gap-4 sm:grid-cols-2 md:max-w-[64rem] md:grid-cols-3 pt-8">
+            {% for game in recent_games %}
+                <a href="{% url 'game_detail' game.slug %}" class="transition-transform hover:-translate-y-1">
+                    <c-card>
+                        <c-card.header>
+                            <c-card.title>{{ game.title }}</c-card.title>
+                            <c-card.description>{{ game.developer }}</c-card.description>
+                        </c-card.header>
+                        <c-card.content>
+                            {% if game.cover_image %}
+                                <img src="{{ game.cover_image.url }}" alt="{{ game.title }} cover" class="w-full h-48 object-cover rounded-md mb-4" />
+                            {% else %}
+                                <div class="w-full h-48 bg-muted rounded-md mb-4 flex items-center justify-center text-muted-foreground">No Image</div>
+                            {% endif %}
+                            <c-badge>{{ game.genre.name }}</c-badge>
+                        </c-card.content>
+                        <c-card.footer>
+                            <p class="text-sm text-muted-foreground">Released: {{ game.release_date|date:"M d, Y" }}</p>
+                        </c-card.footer>
+                    </c-card>
+                </a>
+            {% empty %}
+                <p class="text-muted-foreground col-span-full text-center">No games have been added yet.</p>
+            {% endfor %}
+        </div>
+    </section>
+</main>
+{% endblock %}

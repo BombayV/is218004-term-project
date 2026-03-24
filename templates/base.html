@@ -1,0 +1,66 @@
+{% load static %}
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Reviews - {% block title %}Home{% endblock %}</title>
+    <!-- Tailwind CSS -->
+    <link rel="stylesheet" href="{% static 'css/output.css' %}" />
+    <!-- Alpine.js -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body class="bg-background text-foreground antialiased min-h-screen flex flex-col">
+
+    <!-- Navigation -->
+    <header class="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div class="container flex h-14 items-center mx-auto px-4 justify-between">
+            <div class="mr-4 hidden md:flex">
+                <a class="mr-6 flex items-center space-x-2" href="{% url 'home' %}">
+                    <span class="hidden font-bold sm:inline-block">GameReviews</span>
+                </a>
+                <nav class="flex items-center space-x-6 text-sm font-medium">
+                    <a class="transition-colors hover:text-foreground/80 text-foreground/60" href="{% url 'gallery' %}">Gallery</a>
+                </nav>
+            </div>
+            
+            <div class="flex flex-1 items-center justify-between space-x-2 md:justify-end">
+                <div class="w-full flex-1 md:w-auto md:flex-none">
+                    <form method="GET" action="{% url 'gallery' %}">
+                        <c-input type="search" name="q" placeholder="Search games..." class="h-9 md:w-[300px]" />
+                    </form>
+                </div>
+                <nav class="flex items-center space-x-2">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'dashboard' %}">
+                            <c-button variant="ghost">Dashboard</c-button>
+                        </a>
+                        <form method="POST" action="{% url 'account_logout' %}">
+                            {% csrf_token %}
+                            <c-button type="submit" variant="outline">Logout</c-button>
+                        </form>
+                    {% else %}
+                        <a href="{% url 'account_login' %}">
+                            <c-button variant="ghost">Login</c-button>
+                        </a>
+                        <a href="{% url 'account_signup' %}">
+                            <c-button>Sign Up</c-button>
+                        </a>
+                    {% endif %}
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    {% block content %}{% endblock %}
+
+    <footer class="py-6 md:px-8 md:py-0 border-t border-border mt-auto">
+        <div class="container flex flex-col items-center justify-between gap-4 md:h-16 mx-auto md:flex-row px-4">
+            <p class="text-center text-sm leading-loose text-muted-foreground md:text-left">
+                Built for IS218004 Term Project.
+            </p>
+        </div>
+    </footer>
+
+</body>
+</html>
