@@ -1,0 +1,1 @@
+## SQLite schema for video game review database
