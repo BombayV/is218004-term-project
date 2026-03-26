@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from .models import Game, Genre, Review
 
 def home(request):
@@ -17,18 +18,25 @@ def gallery(request):
     rating = request.GET.get('rating')
     query = request.GET.get('q')
     
+    has_filters = bool(query or genre_slug or rating)
+    
     if query:
         games = games.filter(title__icontains=query)
     
     if genre_slug:
-        games = games.filter(genre__slug=genre_slug)
+        games = games.filter(genres__slug=genre_slug).distinct()
+        
+    paginator = Paginator(games, 9)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
         
     context = {
-        'games': games,
+        'games': page_obj,
         'genres': genres,
         'current_genre': genre_slug,
         'rating': rating,
         'query': query,
+        'has_filters': has_filters,
     }
     return render(request, 'core/gallery.html', context)
 

@@ -5,8 +5,6 @@
 {% block content %}
 <main class="grow max-w-7xl mx-auto p-4 py-8 w-full">
     <div class="flex flex-col md:flex-row gap-8">
-        
-        <!-- Sidebar filters -->
         <aside class="w-full md:w-64 space-y-6">
             <div>
                 <h3 class="font-bold text-lg mb-4">Filters</h3>
@@ -60,9 +58,13 @@
                                 {% else %}
                                     <div class="w-full h-48 bg-muted rounded-md mb-4 flex items-center justify-center text-muted-foreground">No Image</div>
                                 {% endif %}
-                                <div class="flex justify-between items-center">
-                                    <c-badge>{{ game.genre.name }}</c-badge>
-                                    <span class="text-sm font-medium">★ 0.0</span>
+                                <div class="flex justify-between items-center mt-2">
+                                    <div class="flex flex-wrap gap-1">
+                                        {% for genre in game.genres.all %}
+                                            <c-badge>{{ genre.name }}</c-badge>
+                                        {% endfor %}
+                                    </div>
+                                    <span class="text-sm font-medium shrink-0 ml-2">★ {{ game.average_rating }}</span>
                                 </div>
                             </c-card.content>
                         </c-card>
@@ -71,17 +73,22 @@
                     <div class="col-span-full py-12 text-center">
                         <h3 class="text-lg font-medium">No results found</h3>
                         <p class="text-muted-foreground">Try adjusting your filters or search query.</p>
+                        {% if has_filters %}
                         <a href="{% url 'gallery' %}" class="mt-4 inline-block">
                             <c-button variant="outline">Clear Filters</c-button>
                         </a>
+                        {% endif %}
                     </div>
                 {% endfor %}
             </div>
             
-            <!-- Pagination Placeholder -->
+            {% if games.has_next %}
             <div class="mt-8 flex justify-center">
-                <c-button variant="outline">Load More</c-button>
+                <a href="?page={{ games.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if current_genre %}&genre={{ current_genre }}{% endif %}{% if rating %}&rating={{ rating }}{% endif %}">
+                    <c-button variant="outline">Load More</c-button>
+                </a>
             </div>
+            {% endif %}
             
         </div>
     </div>

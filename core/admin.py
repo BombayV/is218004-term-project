@@ -1,17 +1,28 @@
 from django.contrib import admin
-from .models import Genre, Game, Review, AdminActionLog
+from .models import Genre, Platform, Game, Review, AdminActionLog, UserProfile
 
 @admin.register(Genre)
 class GenreAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('name',)}
     list_display = ('name', 'slug')
 
+@admin.register(Platform)
+class PlatformAdmin(admin.ModelAdmin):
+    prepopulated_fields = {'slug': ('name',)}
+    list_display = ('name', 'slug')
+
+@admin.register(UserProfile)
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ('user', )
+    search_fields = ('user__username',)
+
 @admin.register(Game)
 class GameAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('title',)}
-    list_display = ('title', 'genre', 'release_date', 'developer', 'publisher')
-    list_filter = ('genre', 'release_date')
+    list_display = ('title', 'release_date', 'developer', 'publisher', 'average_rating')
+    list_filter = ('genres', 'platforms', 'release_date')
     search_fields = ('title', 'developer', 'publisher')
+    filter_horizontal = ('genres', 'platforms')
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):

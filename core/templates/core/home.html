@@ -48,7 +48,11 @@
                             {% else %}
                                 <div class="w-full h-48 bg-muted rounded-md mb-4 flex items-center justify-center text-muted-foreground">No Image</div>
                             {% endif %}
-                            <c-badge>{{ game.genre.name }}</c-badge>
+                            <div class="flex flex-wrap gap-1">
+                                {% for genre in game.genres.all %}
+                                    <c-badge>{{ genre.name }}</c-badge>
+                                {% endfor %}
+                            </div>
                         </c-card.content>
                         <c-card.footer>
                             <p class="text-sm text-muted-foreground">Released: {{ game.release_date|date:"M d, Y" }}</p>
