@@ -4,33 +4,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Reviews - {% block title %}Home{% endblock %}</title>
-    <!-- Tailwind CSS -->
+    <title>Matrix Game Reviews - {% block title %}Home{% endblock %}</title>    
+    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/favicon-16x16.png' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/apple-icon-180x180.png' %}">    
+    <meta name="theme-color" content="oklch(68.45% 0.211 138.95)">
+
+    <meta name="description" content="Welcome to Matrix Game Reviews, your go-to platform for discovering, rating, and reviewing the latest games. Join our community of gamers and share your gaming experiences today!">
+    <meta property="og:title" content="Matrix Game Reviews - Discover, Rate, and Review the Latest Games">
+    <meta property="og:description" content="Welcome to Matrix Game Reviews, your go-to platform for discovering, rating, and reviewing the latest games. Join our community of gamers and share your gaming experiences today!">
+    <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'images/logo.png' %}">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+
     <link rel="stylesheet" href="{% static 'css/output.css' %}" />
-    <!-- Alpine.js -->
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
-<body class="bg-background text-foreground antialiased min-h-screen flex flex-col">
+<body x-data="{ mobileMenuOpen: false }" class="bg-background text-foreground antialiased min-h-screen flex flex-col relative">
 
-    <!-- Navigation -->
-    <header class="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div class="container flex h-14 items-center mx-auto px-4 justify-between">
+    <header class="sticky top-0 z-30 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div class="max-w-7xl flex h-14 items-center mx-auto px-4 justify-between relative">
+            <div class="flex md:hidden flex-1">
+                <button @click="mobileMenuOpen = true" class="text-foreground">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+                </button>
+            </div>
+
             <div class="mr-4 hidden md:flex">
                 <a class="mr-6 flex items-center space-x-2" href="{% url 'home' %}">
-                    <span class="hidden font-bold sm:inline-block">GameReviews</span>
+                    <img src="{% static 'images/logo.png' %}" alt="GameReviews Logo" class="h-5 object-contain mb-1">
                 </a>
                 <nav class="flex items-center space-x-6 text-sm font-medium">
                     <a class="transition-colors hover:text-foreground/80 text-foreground/60" href="{% url 'gallery' %}">Gallery</a>
                 </nav>
             </div>
+
+            <div class="md:hidden flex justify-center absolute left-1/2 -translate-x-1/2">
+                <a class="flex items-center space-x-2" href="{% url 'home' %}">
+                    <img src="{% static 'images/logo.png' %}" alt="GameReviews Logo" class="h-5 object-contain mb-1">
+                </a>
+            </div>
             
-            <div class="flex flex-1 items-center justify-between space-x-2 md:justify-end">
-                <div class="w-full flex-1 md:w-auto md:flex-none">
+            <div class="flex flex-1 items-center justify-end space-x-2">
+                <div class="hidden md:block w-full flex-1 md:w-auto md:flex-none">
                     <form method="GET" action="{% url 'gallery' %}">
                         <c-input type="search" name="q" placeholder="Search games..." class="h-9 md:w-[300px]" />
                     </form>
                 </div>
-                <nav class="flex items-center space-x-2">
+                
+                <nav class="hidden md:flex items-center space-x-2">
                     {% if user.is_authenticated %}
                         <a href="{% url 'dashboard' %}">
                             <c-button variant="ghost">Dashboard</c-button>
@@ -52,10 +76,56 @@
         </div>
     </header>
 
+    <div x-show="mobileMenuOpen" style="display: none;" class="fixed inset-0 z-[100] flex md:hidden">
+        <div x-show="mobileMenuOpen" 
+             x-transition.opacity
+             class="fixed inset-0 bg-black/30 backdrop-blur-sm"
+             @click="mobileMenuOpen = false"></div>
+        
+        <div x-show="mobileMenuOpen"
+             x-transition:enter="transition ease-in-out duration-300 transform"
+             x-transition:enter-start="-translate-x-full"
+             x-transition:enter-end="translate-x-0"
+             x-transition:leave="transition ease-in-out duration-300 transform"
+             x-transition:leave-start="translate-x-0"
+             x-transition:leave-end="-translate-x-full"
+             class="fixed inset-y-0 left-0 z-50 w-3/4 max-w-sm border-r border-border bg-background p-6 shadow-lg">
+            
+            <div class="flex items-center justify-between mb-8">
+                <a class="flex items-center space-x-2" href="{% url 'home' %}">
+                    <img src="{% static 'images/logo.png' %}" alt="GameReviews Logo" class="h-5 object-contain mb-1">
+                </a>
+                <button @click="mobileMenuOpen = false" class="text-muted-foreground hover:text-foreground">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                </button>
+            </div>
+
+            <nav class="flex flex-col space-y-4">
+                <form method="GET" action="{% url 'gallery' %}" class="mb-4">
+                    <c-input type="search" name="q" placeholder="Search games..." class="h-9 w-full" />
+                </form>
+
+                <a class="text-foreground hover:text-foreground/80 font-medium text-lg" href="{% url 'home' %}">Home</a>
+                <a class="text-foreground hover:text-foreground/80 font-medium text-lg" href="{% url 'gallery' %}">Gallery</a>
+                <div class="h-px bg-border my-2"></div>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'dashboard' %}" class="text-foreground hover:text-foreground/80 font-medium text-lg">Dashboard</a>
+                    <form method="POST" action="{% url 'account_logout' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="text-left w-full text-foreground hover:text-foreground/80 font-medium text-lg">Logout</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'account_login' %}" class="text-foreground hover:text-foreground/80 font-medium text-lg">Login</a>
+                    <a href="{% url 'account_signup' %}" class="text-foreground hover:text-foreground/80 font-medium text-lg">Sign Up</a>
+                {% endif %}
+            </nav>
+        </div>
+    </div>
+
     {% block content %}{% endblock %}
 
     <footer class="py-6 md:px-8 md:py-0 border-t border-border mt-auto">
-        <div class="container flex flex-col items-center justify-between gap-4 md:h-16 mx-auto md:flex-row px-4">
+        <div class="max-w-7xl flex flex-col items-center justify-between gap-4 md:h-16 mx-auto md:flex-row px-4">
             <p class="text-center text-sm leading-loose text-muted-foreground md:text-left">
                 Built for IS218004 Term Project.
             </p>

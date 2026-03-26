@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.decorators import login_required
 from .models import Game, Genre, Review
 
 def home(request):
@@ -51,7 +52,8 @@ def user_profile(request, user_id):
     context = {'user_id': user_id}
     return render(request, 'core/user_profile.html', context)
 
+@login_required
 def dashboard(request):
-    """Users can manage reviews and other stuff while admins have other options available"""
+    """User dashboard to manage reviews and account settings."""
     return render(request, 'core/dashboard.html')
 

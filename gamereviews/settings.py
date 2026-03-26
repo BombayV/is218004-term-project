@@ -72,9 +72,9 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 # Account settings
-ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_LOGIN_METHODS = {'email'}
 ACCOUNT_EMAIL_VERIFICATION = 'optional'
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']
 LOGIN_REDIRECT_URL = '/dashboard/'
 
 # Social Account settings
