@@ -122,6 +122,17 @@
         </div>
     </div>
 
+    {% if messages %}
+    <div class="max-w-7xl mx-auto px-4 mt-4 w-full">
+        {% for message in messages %}
+            <c-alert variant="{% if message.tags == 'error' %}destructive{% else %}default{% endif %}">
+                <c-alert.title>{% if message.tags == 'error' %}Error{% elif message.tags == 'success' %}Success{% else %}Note{% endif %}</c-alert.title>
+                <c-alert.description>{{ message }}</c-alert.description>
+            </c-alert>
+        {% endfor %}
+    </div>
+    {% endif %}
+
     {% block content %}{% endblock %}
 
     <footer class="py-6 md:px-8 md:py-0 border-t border-border mt-auto">

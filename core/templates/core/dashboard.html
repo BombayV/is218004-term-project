@@ -3,23 +3,143 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
-<main class="flex-grow container mx-auto p-4 max-w-7xl mt-8">
-    <div class="flex items-center gap-6 mb-8">
-        <span class="relative flex h-20 w-20 shrink-0 overflow-hidden rounded-full">
-            {% if user.socialaccount_set.all %}
+<main class="grow container mx-auto p-4 max-w-7xl mt-8">
+    <div class="flex items-center gap-6 mb-12 border-b border-border pb-8">
+        <span class="relative flex h-24 w-24 shrink-0 overflow-hidden rounded-full shadow-lg border border-border">
+            {% if user.profile.avatar %}
                 <img class="aspect-square h-full w-full object-cover" 
                      alt="{{ user.username }}'s avatar" 
-                     src="{{ user.socialaccount_set.first.get_avatar_url }}" />
+                     src="{{ user.profile.avatar.url }}" />
             {% else %}
-                <span class="flex h-full w-full items-center justify-center rounded-full bg-muted text-xl font-semibold text-muted-foreground uppercase">
+                <span class="flex h-full w-full items-center justify-center rounded-full bg-secondary text-3xl font-semibold text-muted-foreground uppercase">
                     {{ user.username|slice:":2" }}
                 </span>
             {% endif %}
         </span>
         <div>
-            <h1 class="text-4xl font-bold">Hello, {{ user.username }}!</h1>
-            <p class="text-muted-foreground mt-1">Welcome to your user dashboard. Here you can manage your reviews and account settings.</p>
+            <h1 class="text-4xl font-bold tracking-tight">Hello, {{ user.username }}!</h1>
+            <p class="text-muted-foreground mt-2 text-lg">Welcome to your dashboard. Manage your favorites and reviews here.</p>
         </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Main Content Left Column (Favorites & Reviews) -->
+        <div class="lg:col-span-2 space-y-12">
+            
+            <!-- Favorites Section -->
+            <section>
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-2xl font-bold tracking-tight">Your Favorites</h2>
+                    <a href="{% url 'gallery' %}" class="text-sm text-primary hover:underline">Find more</a>
+                </div>
+                
+                {% if favorites %}
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {% for game in favorites %}
+                            <a href="{% url 'game_detail' game.slug %}" class="block group">
+                                <c-card class="h-full transition-transform hover:-translate-y-1">
+                                    <c-card.content class="p-4 flex gap-4">
+                                        {% if game.cover_image %}
+                                            <img src="{{ game.cover_image.url }}" class="w-16 h-24 object-cover rounded-md flex-shrink-0" alt="{{ game.title }} cover">
+                                        {% else %}
+                                            <div class="w-16 h-24 bg-muted rounded-md flex-shrink-0 flex items-center justify-center text-xs text-muted-foreground">No img</div>
+                                        {% endif %}
+                                        <div class="flex flex-col justify-center">
+                                            <h3 class="font-semibold text-lg group-hover:text-primary transition-colors">{{ game.title }}</h3>
+                                            <p class="text-sm text-muted-foreground">{{ game.developer }}</p>
+                                            <span class="text-sm font-medium mt-1">★ {{ game.average_rating }}</span>
+                                        </div>
+                                    </c-card.content>
+                                </c-card>
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-8 bg-muted/30 rounded-lg border border-border/50">
+                        <p class="text-muted-foreground">You haven't added any games to your favorites yet.</p>
+                        <a href="{% url 'gallery' %}"><c-button variant="outline" class="mt-4">Browse Gallery</c-button></a>
+                    </div>
+                {% endif %}
+            </section>
+
+            <!-- Reviews Section -->
+            <section>
+                <h2 class="text-2xl font-bold tracking-tight mb-4">Your Reviews</h2>
+                {% if reviews %}
+                    <div class="space-y-4">
+                        {% for review in reviews %}
+                            <c-card>
+                                <c-card.header class="pb-2 border-b border-border/50">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <c-card.title class="text-lg text-primary hover:underline"><a href="{% url 'game_detail' review.game.slug %}">{{ review.game.title }}</a></c-card.title>
+                                            <span class="text-xs text-muted-foreground">Posted on {{ review.date_posted|date:"M d, Y" }}</span>
+                                        </div>
+                                        <c-badge variant="outline" class="font-bold flex gap-1">
+                                            <span class="text-yellow-500">★</span> {{ review.rating }}/5
+                                        </c-badge>
+                                    </div>
+                                </c-card.header>
+                                <c-card.content class="pt-3">
+                                    {% if review.is_spoiler %}
+                                        <details class="text-sm text-destructive cursor-pointer group">
+                                            <summary class="font-medium hover:underline">Contains spoilers. Click to reveal.</summary>
+                                            <p class="mt-2 text-foreground">{{ review.review_text|linebreaksbr }}</p>
+                                        </details>
+                                    {% else %}
+                                        <p class="text-sm text-foreground">{{ review.review_text|linebreaksbr }}</p>
+                                    {% endif %}
+                                </c-card.content>
+                            </c-card>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-8 bg-muted/30 rounded-lg border border-border/50">
+                        <p class="text-muted-foreground">You haven't written any reviews yet.</p>
+                    </div>
+                {% endif %}
+            </section>
+        </div>
+
+        <!-- Right Side Column (Recommendations) -->
+        <aside class="space-y-6">
+            <section>
+                <div class="bg-card border border-border rounded-lg overflow-hidden sidebar-sticky top-20">
+                    <div class="bg-primary/5 border-b border-border p-4">
+                        <h2 class="text-xl font-bold tracking-tight">Recommended for You</h2>
+                        {% if favorites %}
+                            <p class="text-sm text-muted-foreground mt-1">Based on your favorites</p>
+                        {% else %}
+                            <p class="text-sm text-muted-foreground mt-1">Top rated games</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="p-4 space-y-4">
+                        {% for game in recommendations %}
+                            <a href="{% url 'game_detail' game.slug %}" class="flex gap-3 group">
+                                {% if game.cover_image %}
+                                    <img src="{{ game.cover_image.url }}" class="w-12 h-16 object-cover rounded shadow-sm" alt="{{ game.title }} cover">
+                                {% else %}
+                                    <div class="w-12 h-16 bg-muted rounded shadow-sm flex items-center justify-center text-[10px] text-muted-foreground">No img</div>
+                                {% endif %}
+                                <div class="flex-1 min-w-0">
+                                    <h4 class="font-semibold text-sm truncate group-hover:text-primary transition-colors">{{ game.title }}</h4>
+                                    <div class="flex flex-wrap gap-1 mt-1">
+                                        {% for genre in game.genres.all|slice:":2" %}
+                                            <span class="text-[10px] bg-secondary px-1.5 rounded text-secondary-foreground">{{ genre.name }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="text-xs font-medium mt-1">★ {{ game.average_rating }}</div>
+                                </div>
+                            </a>
+                            {% if not forloop.last %}<hr class="border-border/50">{% endif %}
+                        {% empty %}
+                            <p class="text-sm text-muted-foreground text-center py-4">No recommendations available at this time.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </section>
+        </aside>
     </div>
 </main>
 {% endblock %}
