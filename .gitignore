@@ -1,4 +1,5 @@
 node_modules/
+gamereviews/static/css/output.css
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
