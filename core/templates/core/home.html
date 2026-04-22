@@ -5,22 +5,66 @@
 {% block content %}
 <main class="grow">
     <!-- Hero Section -->
-    <section class="space-y-6 pb-8 pt-6 md:pb-12 md:pt-10 lg:py-32 items-center flex flex-col justify-center text-center px-12">
-        <div class="container flex max-w-5xl flex-col items-center gap-4 text-center">
-            <c-badge variant="outline" class="mb-4">New Updates Available</c-badge>
-            <h1 class="font-bold text-3xl sm:text-5xl md:text-6xl lg:text-7xl">
-                Discover your next favorite game.
+    <section class="max-w-7xl mx-auto space-y-6 pb-8 pt-6 md:pb-12 md:pt-10 lg:py-32 items-center flex flex-col justify-center text-center px-4">
+        <div class="flex max-w-5xl flex-col items-center gap-6 text-center">
+            <c-badge variant="outline" class="mb-2 text-primary bg-primary/10 border-primary/20">Welcome to Matrix Game Reviews</c-badge>
+            <h1 class="font-bold text-3xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight text-foreground">
+                Your portal to the best gaming experiences.
             </h1>
-            <p class="max-w-2xlleading-normal text-muted-foreground sm:text-xl sm:leading-8">
-                Read community reviews, share your thoughts, and track the games you've played with GameReviews platform.
+            <p class="max-w-3xl leading-normal text-muted-foreground sm:text-xl sm:leading-8 pt-2">
+                Discover your next favorite game, read honest community reviews, share your thoughts, and track the games you've played with the Matrix Game Reviews platform.
             </p>
-            <div class="space-x-4 mt-4">
+            <div class="space-x-4 mt-6">
                 <a href="{% url 'gallery' %}">
                     <c-button size="lg">Browse Games</c-button>
                 </a>
+                {% if user.is_authenticated %}
+                <a href="{% url 'dashboard' %}">
+                    <c-button size="lg" variant="outline">Your Dashboard</c-button>
+                </a>
+                {% else %}
                 <a href="{% url 'account_signup' %}">
                     <c-button size="lg" variant="outline">Create Account</c-button>
                 </a>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    <!-- What This Is Section -->
+    <section class="w-full bg-muted/30 py-12 md:py-16 border-y border-border">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="mx-auto max-w-5xl text-center space-y-4">
+                <h2 class="font-bold text-3xl md:text-5xl">About Matrix Game Reviews</h2>
+                <p class="text-lg text-muted-foreground leading-relaxed max-w-3xl mx-auto pt-2">
+                    Matrix Game Reviews is a dedicated community platform where players and enthusiasts can discover new games, track their favorites, and exchange honest feedback. Whether you're an avid gamer looking for your next adventure or a casual player wanting to see what's trending, we've got you covered.
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-6 mt-8">
+                <div class="flex flex-col items-center text-center p-6 bg-background rounded-lg border border-border shadow-sm">
+                    <div class="mb-4 p-3 bg-primary/10 rounded-full text-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Discover Titles</h3>
+                    <p class="text-muted-foreground pt-1">Browse through our extensive gallery of games, categorize by genre, and find exactly what you're looking for.</p>
+                </div>
+                
+                <div class="flex flex-col items-center text-center p-6 bg-background rounded-lg border border-border shadow-sm">
+                    <div class="mb-4 p-3 bg-primary/10 rounded-full text-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-square"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Read & Write Reviews</h3>
+                    <p class="text-muted-foreground pt-1">Share your gaming experiences and read community reviews to stay informed before playing your next game.</p>
+                </div>
+                
+                <div class="flex flex-col items-center text-center p-6 bg-background rounded-lg border border-border shadow-sm">
+                    <div class="mb-4 p-3 bg-primary/10 rounded-full text-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Rate & Track</h3>
+                    <p class="text-muted-foreground pt-1">Rate games out of 5 stars and curate your personal collection directly on your profile dashboard.</p>
+                </div>
             </div>
         </div>
     </section>
@@ -51,6 +95,8 @@
                             <div class="flex flex-wrap gap-1">
                                 {% for genre in game.genres.all %}
                                     <c-badge>{{ genre.name }}</c-badge>
+                                {% empty %}
+                                    <span class="text-xs text-muted-foreground italic">No genres</span>
                                 {% endfor %}
                             </div>
                         </c-card.content>

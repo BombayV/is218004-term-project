@@ -34,6 +34,8 @@
                                     <input type="checkbox" name="genre" id="genre_{{ genre.slug }}" value="{{ genre.slug }}" {% if genre.slug in current_genres %}checked{% endif %} class="h-4 w-4 rounded border-input text-primary focus:ring-ring">
                                     <label for="genre_{{ genre.slug }}" class="text-sm font-medium leading-none cursor-pointer select-none">{{ genre.name }}</label>
                                 </div>
+                            {% empty %}
+                                <span class="text-sm text-muted-foreground italic">No genres available</span>
                             {% endfor %}
                         </div>
                     </div>
@@ -46,16 +48,23 @@
                                     <input type="checkbox" name="platform" id="platform_{{ platform.slug }}" value="{{ platform.slug }}" {% if platform.slug in current_platforms %}checked{% endif %} class="h-4 w-4 rounded border-input text-primary focus:ring-ring">
                                     <label for="platform_{{ platform.slug }}" class="text-sm font-medium leading-none cursor-pointer select-none">{{ platform.name }}</label>
                                 </div>
+                            {% empty %}
+                                <span class="text-sm text-muted-foreground italic">No platforms available</span>
                             {% endfor %}
                         </div>
                     </div>
 
-                    <div class="space-y-2">
-                        <label class="text-sm font-medium leading-none">Minimum Rating: <span id="ratingVal">{{ rating|default:"0" }}</span>★</label>
-                        <input type="range" name="rating" min="0" max="5" step="0.5" value="{{ rating|default:'0' }}" class="w-full" oninput="document.getElementById('ratingVal').textContent = this.value">
-                        <div class="flex justify-between text-xs text-muted-foreground">
-                            <span>0</span>
-                            <span>5</span>
+                    <div class="space-y-2 pt-2">
+                        <div class="flex items-center justify-between">
+                            <label class="text-sm font-medium leading-none">Minimum Rating</label>
+                            <span class="text-sm font-medium text-muted-foreground"><span id="ratingVal">{{ rating|default:"0" }}</span>★</span>
+                        </div>
+                        <div class="relative flex w-full touch-none select-none items-center pt-2">
+                            <input type="range" name="rating" min="0" max="5" step="0.5" value="{{ rating|default:'0' }}" class="w-full h-2 rounded-full appearance-none bg-secondary accent-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 cursor-pointer" oninput="document.getElementById('ratingVal').textContent = this.value + (this.value % 1 === 0 ? '.0' : '')">
+                        </div>
+                        <div class="flex justify-between text-[10px] text-muted-foreground font-medium px-1">
+                            <span>0.0</span>
+                            <span>5.0</span>
                         </div>
                     </div>
 
@@ -115,9 +124,11 @@
                                         <div class="flex flex-wrap gap-1">
                                             {% for genre in game.genres.all %}
                                                 <c-badge>{{ genre.name }}</c-badge>
+                                            {% empty %}
+                                                <span class="text-xs text-muted-foreground italic">No genres</span>
                                             {% endfor %}
                                         </div>
-                                        <span class="text-sm font-medium shrink-0 ml-2">★ {{ game.average_rating }}</span>
+                                        <span class="text-sm font-medium shrink-0 ml-2">★ {{ game.average_rating|default:"0.0" }}</span>
                                     </div>
                                 </c-card.content>
                             </c-card>

@@ -42,6 +42,8 @@
             <div class="flex flex-wrap gap-2">
                 {% for genre in game.genres.all %}
                     <c-badge variant="secondary">{{ genre.name }}</c-badge>
+                {% empty %}
+                    <span class="text-sm text-muted-foreground italic">No genres</span>
                 {% endfor %}
             </div>
 
@@ -63,6 +65,8 @@
                     <p>
                         {% for platform in game.platforms.all %}
                             {{ platform.name }}{% if not forloop.last %}, {% endif %}
+                        {% empty %}
+                            <span class="text-sm text-muted-foreground italic">No platforms</span>
                         {% endfor %}
                     </p>
                 </div>
