@@ -27,6 +27,9 @@ RUN npm install
 # Copy project files
 COPY . /app/
 
+# Build Tailwind CSS
+RUN npx tailwindcss -i ./input.css -o ./gamereviews/static/css/output.css
+
 # Expose port 8000
 EXPOSE 8000
 
