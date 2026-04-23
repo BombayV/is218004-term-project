@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     
     # Custom apps
     'django_cotton',
+    'storages',
     'core',
 ]
 
@@ -208,6 +209,9 @@ AWS_S3_ENDPOINT_URL = os.getenv('AWS_S3_ENDPOINT_URL')  # e.g. https://nyc3.digi
 AWS_S3_REGION_NAME = os.getenv('AWS_S3_REGION_NAME')     # e.g. nyc3
 AWS_S3_CUSTOM_DOMAIN = os.getenv('AWS_S3_CUSTOM_DOMAIN') # e.g. bucket-name.nyc3.cdn.digitaloceanspaces.com
 AWS_DEFAULT_ACL = 'public-read'
+AWS_S3_SIGNATURE_VERSION = 's3v4'
+AWS_S3_FILE_OVERWRITE = False
+AWS_QUERYSTRING_AUTH = False
 AWS_S3_OBJECT_PARAMETERS = {
     'CacheControl': 'max-age=86400',
 }
