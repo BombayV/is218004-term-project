@@ -1,4 +1,5 @@
 #!/bin/bash
+mkdir -p media
 npx tailwindcss -i ./input.css -o ./gamereviews/static/css/output.css
 python manage.py collectstatic --noinput
 python manage.py migrate --noinput

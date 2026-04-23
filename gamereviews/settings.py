@@ -179,16 +179,36 @@ MEDIA_ROOT = BASE_DIR / 'media'
 SOCIALACCOUNT_LOGIN_ON_GET = True
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
 if DEBUG:
     STORAGES = {
+        'default': {
+            'BACKEND': 'django.core.files.storage.FileSystemStorage',
+        },
         'staticfiles': {
             'BACKEND': 'django.contrib.staticfiles.storage.StaticFilesStorage',
         },
     }
 else:
+    # Production: Use WhiteNoise for static and DigitalOcean Spaces for media
     STORAGES = {
+        'default': {
+            'BACKEND': 'storages.backends.s3boto3.S3Boto3Storage',
+        },
         'staticfiles': {
             'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
         },
     }
+
+# DigitalOcean Spaces / S3 Settings (used only when STORAGES 'default' uses S3Boto3Storage)
+AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_ENDPOINT_URL = os.getenv('AWS_S3_ENDPOINT_URL')  # e.g. https://nyc3.digitaloceanspaces.com
+AWS_S3_REGION_NAME = os.getenv('AWS_S3_REGION_NAME')     # e.g. nyc3
+AWS_S3_CUSTOM_DOMAIN = os.getenv('AWS_S3_CUSTOM_DOMAIN') # e.g. bucket-name.nyc3.cdn.digitaloceanspaces.com
+AWS_DEFAULT_ACL = 'public-read'
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
+}
 
