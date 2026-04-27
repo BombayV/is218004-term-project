@@ -82,7 +82,7 @@
                         <c-button type="submit" variant="outline" class="w-full">Apply Filters</c-button>
                         {% if has_filters %}
                         <a href="{% url 'gallery' %}" class="w-full block">
-                            <c-button variant="ghost" class="w-full text-muted-foreground">Clear Filters</c-button>
+                            <c-button type="button" variant="ghost" class="w-full text-muted-foreground">Clear Filters</c-button>
                         </a>
                         {% endif %}
                     </div>
@@ -152,18 +152,36 @@
                         <p class="text-muted-foreground">Try adjusting your filters or search query.</p>
                         {% if has_filters %}
                         <a href="{% url 'gallery' %}" class="mt-4 inline-block">
-                            <c-button variant="outline">Clear Filters</c-button>
+                            <c-button type="button" variant="outline">Clear Filters</c-button>
                         </a>
                         {% endif %}
                     </div>
                 {% endfor %}
             </div>
             
-            {% if games.has_next %}
-            <div class="mt-8 flex justify-center">
-                <a href="?page={{ games.next_page_number }}{% if query_string %}&{{ query_string }}{% endif %}">
-                    <c-button variant="outline">Load More</c-button>
-                </a>
+            {% if games.paginator.num_pages > 1 %}
+            <div class="mt-8 flex justify-center gap-2">
+                {% if games.has_previous %}
+                    <a href="?page=1{% if query_string %}&{{ query_string }}{% endif %}">
+                        <c-button variant="outline" class="hidden sm:inline-flex">First</c-button>
+                    </a>
+                    <a href="?page={{ games.previous_page_number }}{% if query_string %}&{{ query_string }}{% endif %}">
+                        <c-button variant="outline">Previous</c-button>
+                    </a>
+                {% endif %}
+                
+                <span class="flex h-10 items-center justify-center px-4 rounded-md border border-input text-sm font-medium bg-background">
+                    Page {{ games.number }} of {{ games.paginator.num_pages }}
+                </span>
+
+                {% if games.has_next %}
+                    <a href="?page={{ games.next_page_number }}{% if query_string %}&{{ query_string }}{% endif %}">
+                        <c-button variant="outline">Next</c-button>
+                    </a>
+                    <a href="?page={{ games.paginator.num_pages }}{% if query_string %}&{{ query_string }}{% endif %}">
+                        <c-button variant="outline" class="hidden sm:inline-flex">Last</c-button>
+                    </a>
+                {% endif %}
             </div>
             {% endif %}
             

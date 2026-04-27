@@ -200,7 +200,20 @@ def toggle_favorite(request, game_id):
         profile.favorite_games.add(game)
         messages.success(request, f'Added {game.title} to your favorites.')
         
-    # Redirect back to where the user came from, or home
-    next_url = request.GET.get('next', request.META.get('HTTP_REFERER', 'home'))
-    return redirect(next_url)
+    return redirect(request.GET.get('next', 'gallery'))
+
+@login_required
+def toggle_helpful(request, review_id):
+    """Toggle if a review is helpful for the user"""
+    review = get_object_or_404(Review, id=review_id)
+
+    if request.user in review.helpful_votes.all():
+        review.helpful_votes.remove(request.user)
+        messages.success(request, 'Removed your helpful vote.')
+    else:
+        review.helpful_votes.add(request.user)
+        messages.success(request, 'Marked review as helpful.')
+        
+    return redirect(request.GET.get('next', request.META.get('HTTP_REFERER', 'gallery')))
+
 
